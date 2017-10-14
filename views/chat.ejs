@@ -9,5 +9,42 @@
 
         <h1>Chat</h1>
         <h1><%= username %></h1>
+
+
+        <section id="zone_chat">
+            
+        </section>
+
+        <form action="/" method="post" id="formulaire_chat">
+            <input type="text" id="message" placeholder="Votre message..." size="50" autofocus />
+            <input type="submit" value="Envoyer" />
+        </form>
+
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="http://localhost:9000/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io.connect('http://localhost:9000/');
+            socket.emit('nouveau_client', "<%= username %>");
+            
+            socket.on('message', function(data) {
+                $('#zone_chat').prepend('<p><strong>' + data.pseudo + '</strong> ' + data.message + '</p>');
+            });
+
+            socket.on('nouveau_client', function(pseudo) {
+                $('#zone_chat').prepend('<p><em>' + pseudo + ' a rejoint le Chat !</em></p>');
+            });
+
+            socket.on('parti_client', function(pseudo) {
+                $('#zone_chat').prepend('<p><em>' + pseudo + ' est parti du Chat !</em></p>');
+            });
+
+            $('#formulaire_chat').submit(function () {
+                var message = $('#message').val();
+                socket.emit('message', message);
+                $('#zone_chat').prepend('<p><strong><%= username %></strong> ' + message + '</p>');
+                $('#message').val('').focus();
+                return false; // bloque le post
+            });
+        </script>
     </body>
 </html>

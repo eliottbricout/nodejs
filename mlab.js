@@ -16,7 +16,6 @@ mongodb.MongoClient.connect(uri).then(function(db){
 function connexion(username,password){
 	let deferred = Q.defer();
 	user.findOne( {username,password} ).then(function(item){
-		console.log(item);
 		item ? deferred.resolve() : deferred.reject();
 	});
 	return deferred.promise;
