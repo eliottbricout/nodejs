@@ -24,22 +24,16 @@ function connexion(username,password){
 }
 
 function inscription(username,password){
-	let deferred = Q.defer();
 	password = md5(password);
-	user.insert({username,password}).then(function(item){
-		deferred.resolve();
-	});
-	return deferred.promise;
+	return user.insert({username,password});
 }
 
 function listUser(){
 	let deferred = Q.defer();
 	user.find({}).sort({'_id':-1}).limit(5).toArray().then(function(users){
-		console.log(users)
 		let listusers = _.map(users, (item) => {
 			return item.username;
 		});
-		console.log(listusers)
 		deferred.resolve(listusers);
 	});
 	return deferred.promise;

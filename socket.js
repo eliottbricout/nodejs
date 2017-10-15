@@ -1,5 +1,5 @@
 const ent = require('ent');
-var init = function(app){
+function init(app){
 	var server = require('http').Server(app);
 	var io = require('socket.io')(server);
 

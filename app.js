@@ -1,5 +1,4 @@
 var express = require('express');
-var router = express.Router();
 var session = require('cookie-session');
 var bodyParser = require('body-parser'); 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
@@ -32,6 +31,6 @@ app.use(session({secret: '1234'}))
 
 .use(function(req, res, next){
     res.redirect('/');
-})
+});
 
 app.listen(8080);
