@@ -14,29 +14,17 @@ mongodb.MongoClient.connect(uri).then(function(db){
 	console.log(err);
 });
 
-function connexion(username,password){
-	let deferred = Q.defer();
-	password = md5(password);
-	user.findOne( {username,password} ).then(function(item){
-		item ? deferred.resolve() : deferred.reject();
-	});
-	return deferred.promise;
-}
-
 function inscription(username,password){
 	password = md5(password);
 	return user.insert({username,password});
 }
 
+function connexion(username,password){
+	// TODO
+}
+
 function listUser(){
-	let deferred = Q.defer();
-	user.find({}).sort({'_id':-1}).limit(5).toArray().then(function(users){
-		let listusers = _.map(users, (item) => {
-			return item.username;
-		});
-		deferred.resolve(listusers);
-	});
-	return deferred.promise;
+	// TODO
 }
 
 module.exports = {

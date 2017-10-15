@@ -11,12 +11,7 @@ router.get('/', function(req, res) {
 })
 
 .post('/', urlencodedParser, function(req, res) {
-	if(req.body.password !== req.body.password2){
-		res.redirect('/inscription');
-	}else{
-		mlab.inscription(req.body.username,req.body.password)
-		res.redirect('/');
-	}
+	// TODO
 })
 
 module.exports = router;

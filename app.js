@@ -8,27 +8,14 @@ var mlab = require('./mlab');
 var socket = require('./socket')(app);
 socket.listen(9000);
 
-var inscription = require('./route/inscription');
-var chat = require('./route/chat');
-
 app.use(session({secret: '1234'}))
-
 .get('/', function(req, res) {
     res.render('index.ejs');
 })
 
-.use('/inscription', inscription)
-.use('/chat', chat)
+// TODO les autres routes.
 
-.post('/connexion/', urlencodedParser ,function(req, res) {
-	mlab.connexion(req.body.username,req.body.password).then(function(){
-		req.session.username = req.body.username;
-    	res.redirect('/chat');
-	},function(){
-    	res.redirect('/');
-	});
-})
-
+// On garde cette route à la fin qui redirige sur la racine du site au cas ou aucune route n'est trouvé.
 .use(function(req, res, next){
     res.redirect('/');
 });
