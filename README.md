@@ -1,6 +1,7 @@
 # Chat Node JS 
 
 Le but de ce TP est de créer un chat sur navigateur avec Node JS. Nous nous focaliserons sur la partie serveur, du coup tout le code côté client est fourni dans le dossier *views/*.
+Vous implémenterez l'inscription, la connexion, et le chat coté serveur.
 
 ## Introduction
 
@@ -9,12 +10,12 @@ Le but de ce TP est de créer un chat sur navigateur avec Node JS. Nous nous foc
 Pour pouvoir utiliser node sur les machines de la fac, une étape de configuration est nécessaire. Rendez-vous sur [cette page](https://intranet.fil.univ-lille1.fr/index.php/espace-documentaire/823-node-js) pour les explications.
 Si vous voulez installer Node sur votre machine personnelle c'est [ici](https://nodejs.org/en/download/).  
 
-Node utilise le gestionnaire de paquets npm pour installer les dépendances nécessaires au projet. Pour vérifier que Node est bien installé sur votre système, tapez la commande suivante : `npm -v`
+Node utilise le gestionnaire de paquets npm pour installer les dépendances nécessaires au projet. Pour vérifier que Node est bien installé sur votre système, tapez la commande suivante : `node -v`
 
 Vous devriez obtenir un résultat comme celui-ci :
 ```
-mouradeolive@b10p22:~/git/nodejs$ npm -v
-5.4.2
+mouradeolive@b10p22:~/git/nodejs$ node -v
+v8.6.0
 ```
 
 Une fois Node installé, vous pouvez cloner ce projet avec `git clone https://github.com/eliottbricout/nodejs.git` et installer les dépendances sur votre machine avec la commande `npm install` (la commande doit être lancée à la racine du projet, là où se trouve le fichier **package.json**)
@@ -34,12 +35,40 @@ const server = createServer((request, response) => {
 // On fait écouter le serveur sur le port 3000.
 server.listen(3000) ;
 ```
-Créez un fichier app.js à la racine de votre projet et copiez-collez le code ci-dessus. Démarrez votre serveur avec la commande `node app.js`.
+Dans le fichier app.js à la racine de votre projet et copiez-collez le code ci-dessus. Démarrez votre serveur avec la commande `node app.js`.
 Votre site est désormais accessible via http://localhost:3000.
 
 ## Cours
 
 ### Rappels
+
+Un objet en JS peut se définir de plusieurs manière: 
+```
+var obj = {}
+var obj = new Object(); // équivalent à la ligne du dessus
+```
+Chaque champ peut contenir une variable (string, boolean, int) voire même un autre objet.  
+```
+var object =  {
+	key : "valeur",
+	key2 : [1, true, '3', [], {}],
+	key3 : {
+		key : false
+	}
+}
+```
+Pour accèder à un champ d'un objet : `object.key2[1] // true`  
+
+Pour créer un champ dans un objet il suffit de lui assigner une valeur, il n'y a pas besoin de le déclarer au préalable :  
+```
+var obj = {};
+obj.name = "Morty"
+console.log(obj.name) // Morty
+```
+
+
+Pour plus d'info cf. les slides.
+
 
 ### Création des routes
 
@@ -58,14 +87,14 @@ app.get('/', function(request, response) {
 ```
 On peut aussi gérer les requêtes post, put et delete :
 ```
-.post('/connexion/', function(req, res) {
+.post('/connexion/', function(request, response) {
 	// TODO
 });
 ```
 Lorsqu'on ne précise pas le premier paramètre (l'URL), la fonction associée devient celle appellée par défaut
 lorsqu'aucune autre route ne correspond.
 ```
-app.get(function(req, res) {
+app.get(function(request, response) {
 	res.render('404notFound.html');
 })
 ```
@@ -82,7 +111,7 @@ const express = require('express');
 // C'est le routeur qui va définir le comportement à avoir.
 const router = express.Router();
 
-router.get('/', function(req, res) {
+router.get('/', function(request, response) {
 	// Traitement quelconque...
     
 	// C'est la fonction render qui va se charger d'envoyer les html au client.
@@ -94,16 +123,25 @@ router.get('/', function(req, res) {
 module.exports = router;
 ```
 
-### Lien MongoDB et serveur
-Pour la gestion des utilisateurs, ont s'est basé sur [MongoDB](https://www.mongodb.com/fr).  
-Tout les accès à mongoDB se feront dans le fichier mlab.js. Il existe déjà la methode *inscritption(username, password)* qui va créer un utilisateur dans la base. A vous de vous en inspirer afin de créer les méthodes :
-- *connexion(username, password)*
-- *listUser()*  
+### Base de données
 
-Indice : (utilisez la méthode user.findOne() et pensez à utiliser des promesses)   
-Une fois les méthodes écrites, vous définirez les routes à créer dans **app.js** afin que le traitement approprié soit exécuté.  
-Par exemple `app.use('/inscription', inscription)`.  
-Vous définirez ainsi 3 routes inscription, connexion et chat.
+Comme les accès réseaux des salles tp sont filtrés par un proxy, on utilisera un simple fichier json comme base de données.  
+Pour manipuler notre base de donnée, on utilise sur le module **jsonfile**.
+Pour lire un fichier *.json* on utilise la fonction :
+```
+const jsonfile = require('jsonfile');
+jsonfile.readFile('toto.json', function(err, obj) {
+	if(err){
+		// Gestion d'erreur.
+	}
+  	// TODO
+});
+```
+Pour écrire dans un fichier json on utilise la fonction `jsonfile.writeFileSync('toto.json', object)`  
+
+Afin de ne pas réinventer la roue et de profiter un maximum des modules npm nous vous conseillons d'utiliser le module lodash qui regroupe plusieurs fonctions utiles telles que find, filter, concat etc... La doc du module se trouve [ici](https://lodash.com/docs/4.17.4)
+
+
 
 ### Les sockets 
 
@@ -141,7 +179,10 @@ Vous devez créer 3 routes au total pour gérer :
 
 ### Gestion base de données
 
-
+Vous devez créer 3 fonctions pour gérer :
+- l'inscription dans la base.
+- la connexion dans la base.
+- le listage des derniers utilisateurs inscrits (3 derniers).
 
 ### Communication par websockets
 
