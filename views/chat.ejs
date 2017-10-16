@@ -50,15 +50,14 @@
 
 				scrollToMessage();
 
-				$('#zone_chat').animate({
-    				scrollTop: $('#zone_chat').scrollHeight
-				}, 500);
-
                 return false; // bloque le post
             });
 
 			function scrollToMessage() {
-				
+				var scrollDistance = $("#zone_chat").get(0).scrollHeight;
+				$('#zone_chat').animate({
+    				scrollTop: scrollDistance
+				}, 500);
 			}
 
         </script>
