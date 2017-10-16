@@ -1,12 +1,23 @@
 # Chat Node JS 
-Le but de ce TP étant de comprendre le fonctionnement de base d'une application sous node.js, la partie UI vous sera fournie dans le dossier *views/*, ainsi vous n'aurez qu'a vous concentrer sur le code coté serveur.
 
-## 5 Étapes
+Le but de ce TP est de créer un chat sur navigateur avec Node JS. Nous nous focaliserons sur la partie serveur, du coup tout le code côté client est fourni dans le dossier *views/*.
+
+## Introduction
 
 ### Installation
 
-NPM devrait déjà être installé sur les machines des salles TP. Si vous voulez l'installer sur votre machine personnelle c'est [ici](https://nodejs.org/en/download/).  
-Une fois NPM installé (à vérifier avec npm -v), vous pouvez cloner ce projet et installer les dépendances sur votre machine avec la commande `npm install` (la commande doit être lancé dans le dossier du projet, là ou se trouve le fichier **package.json**)
+Pour pouvoir utiliser node sur les machines de la fac, une étape de configuration est nécessaire. Rendez-vous sur [cette page](https://intranet.fil.univ-lille1.fr/index.php/espace-documentaire/823-node-js) pour les explications.
+Si vous voulez installer Node sur votre machine personnelle c'est [ici](https://nodejs.org/en/download/).  
+
+Node utilise le gestionnaire de paquets npm pour installer les dépendances nécessaires au projet. Pour vérifier que Node est bien installé sur votre système, tapez la commande suivante : `npm -v`
+
+Vous devriez obtenir un résultat comme celui-ci :
+```
+mouradeolive@b10p22:~/git/nodejs$ npm -v
+5.4.2
+```
+
+Une fois Node installé, vous pouvez cloner ce projet avec `git clone https://github.com/eliottbricout/nodejs.git` et installer les dépendances sur votre machine avec la commande `npm install` (la commande doit être lancée à la racine du projet, là où se trouve le fichier **package.json**)
 ### Hello World
 Pour créer un serveur de base qui retourne toujours la même page, c'est très simple.
 ```
@@ -23,29 +34,35 @@ const server = createServer((request, response) => {
 // On fait écouter le serveur sur le port 3000.
 server.listen(3000) ;
 ```
-Avec ce code dans votre fichier principal (nommé app.js par convention) Démarrez le serveur avec la commande `node app.js`.
+Créez un fichier app.js à la racine de votre projet et copiez-collez le code ci-dessus. Démarrez votre serveur avec la commande `node app.js`.
 Votre site est désormais accessible via http://localhost:3000.
-### Les routes
-Il existe un moyen plus simple pour renvoyer du code html au client: le module express.  
-Ce dernier permet, en plus de gérer les routes pour notre application web, d'envoyer directement des fichiers html.
+
+## Cours
+
+### Rappels
+
+### Création des routes
+
+La force de npm (et de node en général) c'est l'utilisation des modules crées par la communauté. Pour la gestion de nos routes on utilisera le module Express qui simplifie l'envoi de contenu HTML et offre une meilleure séparation des fonctionnalités.
+
 ```
 // On récupère le module express.
 var express = require('express');
 var app = express();
 ```
-Pour la racine du site on définit une fonction qui va se charger de retourner du html.
+Pour une URL du site (ici la racine) on définit une fonction qui va se charger de retourner du html.
 ```
-app.get('/', function(req, res) {
-	res.render('index.html');
+app.get('/', function(request, response) {
+	response.render('index.html');
 })
 ```
-On peut aussi gerer les requêtes post.
+On peut aussi gérer les requêtes post, put et delete :
 ```
 .post('/connexion/', function(req, res) {
 	// TODO
 });
 ```
-Lorsqu'on ne précise pas le premier paramètre, la fonction associé devient celle appellé par défaut
+Lorsqu'on ne précise pas le premier paramètre (l'URL), la fonction associée devient celle appellée par défaut
 lorsqu'aucune autre route ne correspond.
 ```
 app.get(function(req, res) {
@@ -53,11 +70,13 @@ app.get(function(req, res) {
 })
 ```
 Enfin on peut écrire notre fonction dans un autre fichier afin de bien organiser notre projet.
+
+Dans app.js :
 ```
 listUser = require("./listUser");
 app.use('/user/list', listUser)
 ```
-Dans notre fichier listUser.js
+Dans listUser.js :
 ```
 const express = require('express');
 // C'est le routeur qui va définir le comportement à avoir.
@@ -87,14 +106,18 @@ Par exemple `app.use('/inscription', inscription)`.
 Vous définirez ainsi 3 routes inscription, connexion et chat.
 
 ### Les sockets 
-Notre fichier socket.js contiendra tout le code relatif au réseau. Il utilise le module **ent**  
+
+Habituellement quand un client et un serveur communiquent via HTTP c'est le client qui initie la connexion et le serveur se contente de répondre à des requêtes. Dans certains cas on veut pouvoir initier une action depuis le serveur : c'est le cas dans les jeux vidéos en ligne ou dans notre cas pour un chat. Il existe plusieurs solutions pour pallier à ce problème (websockets, long-polling, ...). Ici nous allons nous intéresser au module ***socket.io*** qui se base sur les websockets.
+
+Voici un exemple d'utilisation : 
 ```
-const ent = require('ent');
 function init(app){
 var server = require('http').Server(app);
+//On initialise notre gestionnaire de sockets (variable io) en lui passant en paramètre l'objet serveur
 var io = require('socket.io')(server);
+}
 ```
-On récupère l'object io sur lequel on va définir des actions à effectuer selon le type de message reçu. Par exemple:  
+On récupère l'objet io sur lequel on va définir des actions à effectuer selon le type de message reçu. Par exemple:  
 ```
 io.on('connection', function(socket) {
 		// Pour un message du type "disconnect"
@@ -105,10 +128,24 @@ io.on('connection', function(socket) {
         }
         // TODO les autres types de message.
 });
-
-
 ```
-La gestion des messages coté client est déjà implémenté. En plus du disconnect, vous avez 2 types de messages à créer:  
+
+## Travail à effectuer
+
+### Création des routes
+
+Vous devez créer 3 routes au total pour gérer :
+- l'inscription
+- la connexion (qui redirige vers la page de chat si les identifiants sont valides)
+- l'arrivée sur la page de chat
+
+### Gestion base de données
+
+
+
+### Communication par websockets
+
+La gestion des messages côté client est déjà implémentée. En plus du disconnect, vous avez 2 types de messages à créer :  
 - "nouveau_client" (lorsqu'un client se connecte on peut imaginer avertir les autres utilisateurs)
 - "message" (lorsque le serveur recoit un message il le renvoie aux autres client)  
 
