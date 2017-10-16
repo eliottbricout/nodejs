@@ -1,6 +1,7 @@
 var express = require('express');
 var session = require('cookie-session');
 var bodyParser = require('body-parser'); 
+
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 var app = express();
@@ -12,6 +13,7 @@ var inscription = require('./route/inscription');
 var chat = require('./route/chat');
 
 app.use(session({secret: '1234'}))
+.use("/css", express.static(__dirname + '/resources/css'))
 
 .get('/', function(req, res) {
     res.render('index.ejs');

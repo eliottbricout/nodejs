@@ -3,24 +3,26 @@
 <html>
     <head>
         <title>My Node site</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
     </head>
 
     <body>
 
         <h1>Bienvenue dans le chat <%= username %></h1>
-        <span> Dernier utilisateur inscrit : </span>
+        <span> Derniers utilisateurs inscrits : </span>
         <% users.forEach(function(user) { %>
             <span style="color : blue"> <%= user %> </span>,
         <% }); %>
 
-        <section id="zone_chat">
-            
-        </section>
+	<div id="group_chat">
 
-        <form action="/" method="post" id="formulaire_chat">
-            <input type="text" id="message" placeholder="Votre message..." size="50" autofocus />
-            <input type="submit" value="Envoyer" />
-        </form>
+		<section id="zone_chat"></section>
+
+		<form action="/" method="post" id="formulaire_chat">
+		    <input type="text" id="message" placeholder="Message ..." size="50" autofocus autocomplete="off"/>
+		</form>
+
+	</div>
 
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="http://localhost:9000/socket.io/socket.io.js"></script>
@@ -29,24 +31,36 @@
             socket.emit('nouveau_client', "<%= username %>");
             
             socket.on('message', function(data) {
-                $('#zone_chat').prepend('<p><strong>' + data.pseudo + '</strong> ' + data.message + '</p>');
+                $('#zone_chat').append('<p><strong>' + data.pseudo + '</strong> ' + data.message + '</p>');
             });
 
             socket.on('nouveau_client', function(pseudo) {
-                $('#zone_chat').prepend('<p><em>' + pseudo + ' a rejoint le Chat !</em></p>');
+                $('#zone_chat').append('<p><em>' + pseudo + ' a rejoint le Chat !</em></p>');
             });
 
             socket.on('parti_client', function(pseudo) {
-                $('#zone_chat').prepend('<p><em>' + pseudo + ' est parti du Chat !</em></p>');
+                $('#zone_chat').append('<p><em>' + pseudo + ' est parti du Chat !</em></p>');
             });
 
             $('#formulaire_chat').submit(function () {
                 var message = $('#message').val();
                 socket.emit('message', message);
-                $('#zone_chat').prepend('<p><strong><%= username %></strong> ' + message + '</p>');
+                $('#zone_chat').append('<p><strong><%= username %></strong> : ' + message + '</p>');
                 $('#message').val('').focus();
+
+				scrollToMessage();
+
+				$('#zone_chat').animate({
+    				scrollTop: $('#zone_chat').scrollHeight
+				}, 500);
+
                 return false; // bloque le post
             });
+
+			function scrollToMessage() {
+				
+			}
+
         </script>
     </body>
 </html>
