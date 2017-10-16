@@ -14,6 +14,7 @@ mongodb.MongoClient.connect(uri).then(function(db){
 	console.log(err);
 });
 
+
 function connexion(username,password){
 	let deferred = Q.defer();
 	password = md5(password);

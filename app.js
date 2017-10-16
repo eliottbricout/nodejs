@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 var app = express();
-var mlab = require('./mlab');
+var user_service = require('./user.service');
 var socket = require('./socket')(app);
 socket.listen(9000);
 
@@ -21,12 +21,12 @@ app.use(session({secret: '1234'}))
 .use('/chat', chat)
 
 .post('/connexion/', urlencodedParser ,function(req, res) {
-	mlab.connexion(req.body.username,req.body.password).then(function(){
+	if(user_service.connexion(req.body.username,req.body.password)){
 		req.session.username = req.body.username;
-    	res.redirect('/chat');
-	},function(){
-    	res.redirect('/');
-	});
+    		res.redirect('/chat');
+	} else {
+    		res.redirect('/');
+	}
 })
 
 .use(function(req, res, next){
