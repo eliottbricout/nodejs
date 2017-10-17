@@ -65,9 +65,7 @@ var obj = {};
 obj.name = "Morty"
 console.log(obj.name) // Morty
 ```
-
-
-Pour plus d'info cf. les slides.
+(cf. slides 8-11)
 
 
 ### Création des routes
@@ -91,10 +89,10 @@ On peut aussi gérer les requêtes post, put et delete :
 	// TODO
 });
 ```
-Lorsqu'on ne précise pas le premier paramètre (l'URL), la fonction associée devient celle appellée par défaut
+Lorsqu'on ne précise pas le premier paramètre (l'URL) de la fonction use, la fonction associée devient celle appellée par défaut
 lorsqu'aucune autre route ne correspond.
 ```js
-app.get(function(request, response) {
+app.use(function(request, response) {
 	res.render('404notFound.html');
 })
 ```
@@ -126,7 +124,7 @@ module.exports = router;
 ### Base de données
 
 Comme les accès réseaux des salles tp sont filtrés par un proxy, on utilisera un simple fichier json comme base de données.  
-Pour manipuler notre base de donnée, on utilise sur le module **jsonfile**.
+Pour manipuler notre base de donnée, on utilise sur le module **jsonfile**. (cf.slides 43)
 Pour lire un fichier *.json* on utilise la fonction :
 ```js
 const jsonfile = require('jsonfile');
@@ -167,7 +165,7 @@ io.on('connection', function(socket) {
         // TODO les autres types de message.
 });
 ```
-
+(cf.slides 47-51)
 ## Travail à effectuer
 
 ### Création des routes
@@ -177,9 +175,10 @@ Vous devez créer 5 routes au total pour gérer :
 - la connexion (qui redirige vers la page de chat si les identifiants sont valides) ( GET / POST )
 - l'arrivée sur la page de chat ( GET )
 
-Utiliser *express*, *express.Router()* et *body-parser*  (cf slide 10-15).
+Utiliser *express*, *express.Router()* et *body-parser*  (cf slide 29-33).
 Séparer bien les routes par rapport aux URLs un fichier pour */connexion* , */inscription* et un pour */chat*
- 
+Ne pas oublier de rendre accessible le css `app.use('css/', express.static(__direname + "chemin_vers_css"))` (cf. slide 37)
+
 ### Gestion base de données
 
 La gestion de la base de donnée se fera via un fichier JSON sous cette forme :
@@ -199,7 +198,7 @@ Vous devez créer 3 fonctions pour gérer :
 - le listage des derniers utilisateurs inscrits (afin d'afficher sur le chat les derniers utilisateurs inscrit)
 
 Utiliser [*jsonfile*](https://www.npmjs.com/package/jsonfile) pour lire le fichier, [*md5*](https://www.npmjs.com/package/md5) pour crypter le mot de passe, 
-*cookie-session* (cf slide 10) pour la gestion de la session utilisateur
+*cookie-session* (cf slide 39) pour la gestion de la session utilisateur
 et [*lodash*](https://lodash.com/docs/4.17.4) pour les fonctions utilitaires ( find, map ... )
 
 
@@ -221,6 +220,8 @@ En plus du disconnect, vous avez 2 types de messages à créer :
 
 Utiliser *socket.io* pour la communication et [*ent*](https://www.npmjs.com/package/ent) pour encoder les messages (afin d'éviter les injection XSS ;) ).
 
+### Bonus
+- Rajouter des commandes au serveur (/who, /help, /pm 'pseudo' message privé a un utilisateur).  
 
 
 **Lucas Moura de Oliveira, Jean-Hugo Ouwe Missi Oukem, Eliott Bricout**
