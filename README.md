@@ -172,23 +172,55 @@ io.on('connection', function(socket) {
 
 ### Création des routes
 
-Vous devez créer 3 routes au total pour gérer :
-- l'inscription
-- la connexion (qui redirige vers la page de chat si les identifiants sont valides)
-- l'arrivée sur la page de chat
+Vous devez créer 5 routes au total pour gérer :
+- l'inscription ( GET / POST )
+- la connexion (qui redirige vers la page de chat si les identifiants sont valides) ( GET / POST )
+- l'arrivée sur la page de chat ( GET )
 
+Utiliser *express*, *express.Router()* et *body-parser*  (cf slide 10-15).
+Séparer bien les routes par rapport aux URLs un fichier pour */connexion* , */inscription* et un pour */chat*
+ 
 ### Gestion base de données
+
+La gestion de la base de donnée se fera via un fichier JSON sous cette forme :
+
+```json
+{
+	listuser : [
+		{username : 'rick', password : 'fdsf5ds41f65dsf1s'},
+		{username : 'morty', password : 'dfdsf415f6d1sf56d'}
+	]
+}
+```
 
 Vous devez créer 3 fonctions pour gérer :
 - l'inscription dans la base.
 - la connexion dans la base.
-- le listage des derniers utilisateurs inscrits (3 derniers).
+- le listage des derniers utilisateurs inscrits (afin d'afficher sur le chat les derniers utilisateurs inscrit)
+
+Utiliser [*jsonfile*](https://www.npmjs.com/package/jsonfile) pour lire le fichier, [*md5*](https://www.npmjs.com/package/md5) pour crypter le mot de passe, 
+*cookie-session* (cf slide 10) pour la gestion de la session utilisateur
+et [*lodash*](https://lodash.com/docs/4.17.4) pour les fonctions utilitaires ( find, map ... )
+
 
 ### Communication par websockets
 
-La gestion des messages côté client est déjà implémentée. En plus du disconnect, vous avez 2 types de messages à créer :  
-- "nouveau_client" (lorsqu'un client se connecte on peut imaginer avertir les autres utilisateurs)
+Le client est déjà configuré pour se connecter sur le port 9000.
+L'initialisation de la socket a déjà été faite dans le fichier **socket.js**.
+Pour faire écouter la socket utiliser le code suivant dans le fichier **app.js**. 
+```
+var express = require('express');
+var app = express();
+var socket = require('./socket')(app);
+socket.listen(9000);
+```
+
+En plus du disconnect, vous avez 2 types de messages à créer :  
+- "nouveau_client" (lorsqu'un client se connecte : *rick est entré dans le chat*)
 - "message" (lorsque le serveur recoit un message il le renvoie aux autres client)  
+
+Utiliser *socket.io* pour la communication et [*ent*](https://www.npmjs.com/package/ent) pour encoder les messages (afin d'éviter les injection XSS ;) ).
+
 
 
 **Lucas Moura de Oliveira, Jean-Hugo Ouwe Missi Oukem, Eliott Bricout**
