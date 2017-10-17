@@ -1,0 +1,19 @@
+#message {
+    height: 30px;
+    text-indent: 5px;
+    width: 100%;	
+    box-sizing: border-box;
+}
+
+#zone_chat {
+	overflow-y: auto;
+	min-height: 50px;
+    max-height: 500px;
+    border: 1px solid;
+    margin: auto;
+    margin-top: 10px;
+}
+
+#group_chat {
+	width: 100%;
+}
