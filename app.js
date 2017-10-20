@@ -15,9 +15,7 @@ var chat = require('./route/chat');
 app.use(session({secret: '1234'}))
 .use("/css", express.static(__dirname + '/resources/css'))
 
-.get('/', function(req, res) {
-    
-
+.get('/', function(req, res) { 
     res.render('index.ejs');
 })
 
@@ -38,14 +36,3 @@ app.use(session({secret: '1234'}))
 });
 
 app.listen(8080);
-
-function while1(x){
-	for(let i =0; i<x;i++){
-		console.log("while1");
-	}
-}
-function while2(x){
-	for(let i =0; i<x;i++){
-		console.log("while2");
-	}
-}
